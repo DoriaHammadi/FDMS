@@ -102,7 +102,7 @@ class Recommandation(object):
             self.p = pd.DataFrame(np.array(p), columns=self.database.columns)
             self.b_u = pd.DataFrame(np.array(b_u), index=self.database.columns)
             self.b_f = pd.DataFrame(np.array(b_f), index=self.database.index)
-            self.mu = mu
+            self.mu = np.array(mu)[0]
             res_test.append(self.score_biais(test,abs_error).loc['mean'])
 
         return(cost,res_test)
@@ -139,7 +139,9 @@ class Recommandation(object):
 
     def test_biais(self, user, film):
         note = round((self.q.loc[film] * self.p[user]).sum() +
-                     self.mu + self.b_u[user] + self.b_f.loc[film], 0)
+                     self.mu +
+                     self.b_u.loc[user] +
+                     self.b_f.loc[film], 0)
         return (note)
 
     def score(self,list_test,error):
